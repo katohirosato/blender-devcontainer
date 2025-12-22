@@ -1,0 +1,27 @@
+{
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+    "features": {
+        "ghcr.io/devcontainers/features/python:1": {},
+        "ghcr.io/devcontainers/features/github-cli:1": {},
+        "ghcr.io/devcontainers/features/node:1": {},
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "github.copilot",
+                "github.copilot-chat",
+                "github.vscode-github-actions",
+                "redhat.vscode-yaml",
+                "ms-azuretools.vscode-docker",
+                "ms-python.python",
+                "tamasfe.even-better-toml",
+                "davidanson.vscode-markdownlint"
+            ]
+        }
+    },
+    "onCreateCommand": "npm install -g @devcontainers/cli",
+    "postCreateCommand": "devcontainer templates apply --template-id ghcr.io/peakys-org/blender-devcontainer/blender-devcontainer --omit-paths '[\".git/*\", \".github/*\", \".gitignore\", \"blender_services.json\", \"novnc_setup/*\"]'",
+    "postStartCommand": "bash postStartCommand.sh"
+    // "postAttachCommand": "devcontainer up --workspace-folder ."
+}

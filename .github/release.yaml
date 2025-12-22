@@ -1,0 +1,27 @@
+changelog:
+  categories:
+    - title: "Enhancements"
+      labels:
+        - "enhancement"
+    - title: "🚀 Features"
+      labels:
+        - "feature"
+    - title: "🐛 Bug Fixes"
+      labels:
+        - "bug"
+    - title: "🧰 Maintenance"
+      labels:
+        - "chore"
+        - "docs"
+        - "refactor"
+        - "test"
+    - title: "contributions"
+      labels:
+        - "contribution"
+  exclude:
+    labels:
+      - "internal"
+      - "dependencies"
+    authors:
+      - "dependabot[bot]"
+      - "github-actions[bot]"

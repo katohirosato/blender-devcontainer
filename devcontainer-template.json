@@ -1,0 +1,20 @@
+{
+  "id": "blender-devcontainer",
+  "version": "0.0.0",
+  "name": "Blender in Dev Container",
+  "description": "Blender in Dev Container",
+  "documentationURL": "https://github.com/peakys-org/blender-devcontainer/",
+  "publisher": "株式会社 Peakys (@peakys-org)",
+  "licenseURL": "https://github.com/peakys-org/blender-devcontainer/",
+  "keywords": [
+    "blender",
+    "sway",
+    "waynland",
+    "novnc"
+  ],
+  "platforms": [
+    "Node.js",
+    "TypeScript",
+    "JavaScript"
+  ]
+}

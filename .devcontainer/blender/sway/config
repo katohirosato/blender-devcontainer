@@ -1,0 +1,9 @@
+output HEADLESS-1 background splash.png center "#FFFFFF"
+xwayland disable
+bindsym --release Escape kill
+
+# Comment out if you are familiar with tiled windows.
+for_window [app_id="blender"] floating enable
+
+exec echo "export SWAYSOCK=$SWAYSOCK" > /tmp/sway-env
+exec wayvnc --websocket --transient-seat --render-cursor --verbose

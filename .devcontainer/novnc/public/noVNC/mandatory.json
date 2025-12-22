@@ -1,0 +1,8 @@
+{
+    "autoconnect": true,
+    "reconnect": true,
+    "encrypt": true,
+    "resize": "remote",
+    "shared": true,
+    "view_clip": true
+}

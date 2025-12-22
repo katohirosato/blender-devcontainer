@@ -1,0 +1,25 @@
+name: "Dependabot Auto Merge"
+
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  merge: 
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v5
+      - name: "Auto Merge Dependabot PRs"
+        run: |
+          gh pr review "${{ github.head_ref }}" --approve
+          gh pr merge "${{ github.head_ref }}" --merge --auto

@@ -1,0 +1,87 @@
+# https://github.com/devcontainers/template-starter/blob/main/.github/workflows/release.yaml
+
+name: "Release Dev Container Templates & Generate Documentation"
+
+on:
+  push:
+    branches:
+      - main
+  
+permissions:
+  contents: write
+  packages: write
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v5
+      - name: Bump patch version in devcontainer-template.json
+        run: |
+          file=devcontainer-template.json
+          current=$(jq -r '.version' "$file")
+          IFS=. read -r major minor patch <<< "$current"
+          patch=$((patch + 1))
+          new="$major.$minor.$patch"
+          tmp=$(mktemp)
+          jq --arg v "$new" '.version = $v' "$file" > "$tmp"
+          mv "$tmp" "$file"
+      - name: Commit & push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet; then
+            git add devcontainer-template.json
+            git commit -m "chore: bump devcontainer template version"
+            git push
+          else
+            echo "No changes to commit"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  deploy:
+    runs-on: ubuntu-latest
+    needs: bump-version
+    steps:
+      - uses: actions/checkout@v5
+      - name: "Publish Templates"
+        uses: devcontainers/action@v1
+        with:
+          publish-templates: "true"
+          base-path-to-templates: "."
+          generate-docs: "true"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create PR for Documentation
+        id: push_image_info
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          echo "Start."
+
+          # Configure git and Push updates
+          git config --global user.email github-actions[bot]@users.noreply.github.com
+          git config --global user.name github-actions[bot]
+          git config pull.rebase false
+
+          branch=automated-documentation-update-$GITHUB_RUN_ID
+          git checkout -b $branch
+          message='Automated documentation update'
+
+          # Add / update and commit
+          git add */**/README.md
+          git commit -m 'Automated documentation update [skip ci]' || export NO_UPDATES=true
+          echo "No updates: $NO_UPDATES"
+
+          # Push
+          if [ "$NO_UPDATES" != "true" ] ; then
+              git push origin "$branch"
+              gh pr create --title "$message" --body "$message"
+          fi

@@ -1,0 +1,35 @@
+{
+    "name": "Blender Dev Container",
+    "dockerComposeFile": "compose.yaml",
+    "service": "devcontainer",
+    "overrideCommand": true,
+    "shutdownAction": "stopCompose",
+    "workspaceFolder": "/workspaces/development/extensions/${localWorkspaceFolderBasename}",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "github.copilot",
+                "github.copilot-chat",
+                "ms-python.python",
+                "ms-vscode.cpptools",
+				"tamasfe.even-better-toml"
+            ]
+        }
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/python:1": {},
+        "ghcr.io/devcontainers/features/github-cli:1": {},
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    },
+    "forwardPorts": ["novnc:3000"],
+    "portsAttributes": {
+        "novnc:3000": {
+            "label": "noVNC",
+            "onAutoForward": "openBrowser"
+        }
+    },
+    "initializeCommand": "mkdir -p extensions/${localWorkspaceFolderBasename}",
+    "onCreateCommand": "python3 -m pip install --break-system-packages --upgrade pip fake-bpy-module",
+    "postCreateCommand": "curl -L -o .devcontainer/blender/sway/splash.png https://raw.githubusercontent.com/peakys-org/blender-devcontainer/main/.devcontainer/blender/sway/splash.png", // Please retain this line:
+    "postAttachCommand": "[ -n \"$CODESPACE_NAME\" ] && gh codespace ports visibility 5901:public -c $CODESPACE_NAME || true"
+}

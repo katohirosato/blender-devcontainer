@@ -1,0 +1,10 @@
+// cp novnc_setup/mandatory.json .devcontainer/novnc/public/noVNC/mandatory.json
+
+{
+    "autoconnect": true,
+    "reconnect": true,
+    "encrypt": true,
+    "resize": "remote",
+    "shared": true,
+    "view_clip": true
+}

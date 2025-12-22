@@ -1,0 +1,42 @@
+# cp utils/obfuscate/obfuscate.yaml .github/workflows/obfuscate.yaml
+
+name: obfuscate Obfuscation
+
+on:
+  release:
+    types: [released]
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Package to obfuscate (leave empty to obfuscate all packages)'
+        required: false
+        default: ''
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  obfuscate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build with Docker Buildx
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ github.event.inputs.package }}" ]; then
+            utils/obfuscate/obfuscate.sh "${{ github.event.inputs.package }}"
+          else
+            utils/obfuscate/obfuscate.sh 
+          fi
+      - name: Upload obfuscated artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.package }}-obfuscated
+          path: obfuscated/${{ matrix.package }}
+          retention-days: 1
